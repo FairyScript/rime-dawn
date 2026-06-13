@@ -116,17 +116,17 @@ engine:
 
 recognizer:
   patterns:
-    wanxiang_reverse: "^`[A-Za-z]*$"
+    wanxiang_reverse: "^~[A-Za-z]*$"
     #user_dict_appender: "^``[A-Za-z/`']*$"
     unicode: "^U[0-9a-fA-F]+"
 
 # 拼写处理器
 speller:
   # 参与编码的按键。此处设定的按键将不直接上屏。
-  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA7890`\
+  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA7890~
 
   # 首个编码允许的按键。作用同 `alphabet`，但仅作用于首个编码。
-  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA`
+  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA~
 
   # 允许的分词符。
   # 第一个字符 " "（空格）代表拼音之间的分隔符；第二个字符 "'" 代表允许输入单引号手动分词。
@@ -226,7 +226,7 @@ wanxiang_reverse:
   tag: wanxiang_reverse
   dictionary: wanxiang_reverse
   enable_completion: true
-  prefix: "`"  # 反查前缀（反查时前缀会消失），与 recognizer/patterns/wanxiang_reverse 匹配
+  prefix: "~"  # 反查前缀（反查时前缀会消失），与 recognizer/patterns/wanxiang_reverse 匹配
   tips: "〔反查：拆分|笔画〕"
 
 user_dict:
@@ -250,7 +250,7 @@ user_dict_appender:
   always_show_comments: true
 
   # 手动造词引导符。
-  prefix: "``"
+  prefix: "@"
 
   # 手动造词提示。
   tips: "〔造词〕"
@@ -349,7 +349,7 @@ lookup_filter:
   tags: [abc, user_dict_appender]
 
   # 反查引导符，需添加至 speller/alphabet。
-  trigger: "`"
+  trigger: "~"
 
   # 反查数据库。
   dicts: [wanxiang_reverse]
@@ -430,8 +430,8 @@ key_binder:
     # 通过 Tab 切换到第一个音节输入辅助码后，Ctrl + Tab 提交并切换至下个音节。
     - {when: composing, accept: "Control+Tab", send_sequence: '{Home}{Shift+Right}{1}{Shift+Right}'}
 
-    # 编码中输入 `` 进入造词模式。
-    - {match: "^.*`$", accept: "`", send_sequence: '{BackSpace}{Home}{`}{`}{End}'}
+    # Ctrl + \ 进入造词模式。
+    - {when: composing, accept: "Control+backslash", send_sequence: '{Home}@{End}'}
 
 
 editor:
