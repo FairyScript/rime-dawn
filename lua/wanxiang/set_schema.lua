@@ -5,24 +5,25 @@
 
 local wanxiang = require("wanxiang.wanxiang")
 
-local PINYIN_SCHEMAS = {
-    ["/pinyin"] = "全拼",
-    ["/zrm"] = "自然码",
-    ["/znabc"] = "智能ABC",
-    ["/flypy"] = "小鹤双拼",
-    ["/mspy"] = "微软双拼",
-    ["/sogou"] = "搜狗双拼",
-    ["/ziguang"] = "紫光双拼",
-    ["/gbpy"] = "国标双拼",
-    ["/pyjj"] = "拼音加加",
-    ["/lxsq"] = "乱序17",
-    ["/zrlong"] = "自然龙",
-    ["/hxlong"] = "汉心龙",
+local OPTION_TO_PINYIN = {
+    pinyin_pinyin = "全拼",
+    pinyin_zrm = "自然码",
+    pinyin_znabc = "智能ABC",
+    pinyin_flypy = "小鹤双拼",
+    pinyin_mspy = "微软双拼",
+    pinyin_sogou = "搜狗双拼",
+    pinyin_ziguang = "紫光双拼",
+    pinyin_gbpy = "国标双拼",
+    pinyin_pyjj = "拼音加加",
+    pinyin_lxsq = "乱序17",
+    pinyin_zrlong = "自然龙",
+    pinyin_hxlong = "汉心龙",
 }
 
+---@type table<string, boolean>
 local AUX_SCHEMAS = {
-    ["/zjf"] = "直接辅助",
-    ["/jjf"] = "间接辅助",
+    ["直接辅助"] = true,
+    ["间接辅助"] = true,
 }
 
 ---Copies a file from `src` to `dest`, returning whether the copy succeeded.
@@ -98,24 +99,23 @@ local function update_custom_file(custom_file, transform)
     return true
 end
 
+---Returns `name` unchanged when it is an auxiliary schema name; otherwise
+---returns the target pinyin schema name.
+---@param name string
+---@param schema_name string
+---@return string
+local function preserve_aux(name, schema_name)
+    if AUX_SCHEMAS[name] then
+        return name
+    end
+    return schema_name
+end
+
 ---Rewrites the pinyin algebra reference in a custom file to the given schema.
 ---@param custom_file string
 ---@param schema_name string
 ---@return boolean ok true if a substitution was made and written
 local function set_pinyin_schema(custom_file, schema_name)
-    ---Returns `name` unchanged when it is an auxiliary schema name; otherwise
-    ---returns the target pinyin schema name.
-    ---@param name string
-    ---@return string
-    local function preserve_aux(name)
-        for _, aux_name in pairs(AUX_SCHEMAS) do
-            if name == aux_name then
-                return name
-            end
-        end
-        return schema_name
-    end
-
     return update_custom_file(custom_file, function(content)
         local n = 0
         if custom_file:find("wanxiang_reverse") then
@@ -124,11 +124,7 @@ local function set_pinyin_schema(custom_file, schema_name)
             content, n = content:gsub("(%s*__patch:%s*wanxiang_algebra:/mixed/)%S+", "%1" .. schema_name)
         elseif custom_file:find("wanxiang%.custom") then
             content, n = content:gsub("(%s*%-%s*wanxiang_algebra:/base/)(%S+)", function(prefix, suffix)
-                return prefix .. preserve_aux(suffix)
-            end)
-        elseif custom_file:find("wanxiang_pro%.custom") then
-            content, n = content:gsub("(%s*%-%s*wanxiang_algebra:/pro/)(%S+)", function(prefix, suffix)
-                return prefix .. preserve_aux(suffix)
+                return prefix .. preserve_aux(suffix, schema_name)
             end)
         end
 
@@ -139,124 +135,74 @@ local function set_pinyin_schema(custom_file, schema_name)
     end)
 end
 
----Rewrites the auxiliary code algebra reference in a custom file to the given
----schema, replacing both direct and indirect aux entries.
----@param custom_file string
----@param schema_name string
----@return boolean ok true if a substitution was made and written
-local function set_aux_schema(custom_file, schema_name)
-    return update_custom_file(custom_file, function(content)
-        local n1, n2
-        content, n1 = content:gsub("(%-+%s*wanxiang_algebra:/pro/)直接辅助(%s*#?.*)", "%1" .. schema_name .. "%2")
-        content, n2 = content:gsub("(%-+%s*wanxiang_algebra:/pro/)间接辅助(%s*#?.*)", "%1" .. schema_name .. "%2")
-
-        if n1 + n2 == 0 then
-            return nil
+---Detects the active pinyin scheme option and returns the corresponding schema name.
+---@param ctx Context
+---@return string?
+local function detect_pinyin_scheme(ctx)
+    for option, schema in pairs(OPTION_TO_PINYIN) do
+        if ctx:get_option(option) then
+            return schema
         end
-        return content
-    end)
+    end
+    return nil
 end
 
----Rime translator that handles `/`-prefixed schema-switch commands by
----rewriting the relevant `*.custom.yaml` files and yielding a status candidate.
----@param input string
----@param seg Segment
+---Rewrites all relevant custom files to switch to the given pinyin schema.
+---@param schema_name string
 ---@param env Env
-local function translator(input, seg, env)
-    if input:sub(1, 1) ~= "/" then
-        return
-    end
-
-    local target_aux_schema = AUX_SCHEMAS[input]
-    local target_pinyin_schema = PINYIN_SCHEMAS[input]
-    if not target_aux_schema and not target_pinyin_schema then
-        return
-    end
-
+local function apply_pinyin_schema(schema_name, env)
     local user_dir = rime_api.get_user_data_dir()
     local shared_dir = rime_api.get_shared_data_dir()
 
-    -- Check existing main custom file
     local main_custom_file = env.engine.schema.schema_id .. ".custom.yaml"
-    local main_custom_file_path = user_dir .. "/" .. main_custom_file
-    local main_custom_file_exists = wanxiang.file_exists(main_custom_file_path)
+    local files = {
+        main_custom_file,
+        "wanxiang_mixedcode.custom.yaml",
+        "wanxiang_reverse.custom.yaml",
+    }
 
-    if target_aux_schema then
-        if not ensure_custom_file(main_custom_file, user_dir, shared_dir) then
-            yield(Candidate("message", seg.start, seg._end, "〔警告〕未找到模板配置文件。", ""))
-            return
+    for _, filename in ipairs(files) do
+        if ensure_custom_file(filename, user_dir, shared_dir) then
+            set_pinyin_schema(user_dir .. "/" .. filename, schema_name)
         end
-
-        local success = set_aux_schema(main_custom_file_path, target_aux_schema)
-
-        ---@type string
-        local msg
-        if success then
-            msg = main_custom_file_exists
-                    and ("已切换至〔" .. target_aux_schema .. "〕方案，请重新部署。")
-                or ("已创建新配置并切换至〔" .. target_aux_schema .. "〕方案，请重新部署。")
-        else
-            msg = "〔警告〕未找到可切换的条目。"
-        end
-        yield(Candidate("message", seg.start, seg._end, msg, ""))
-        return
-    end
-
-    if target_pinyin_schema then
-        local files = {
-            main_custom_file,
-            "wanxiang_mixedcode.custom.yaml",
-            "wanxiang_reverse.custom.yaml",
-        }
-
-        ---@type string[]
-        local missing = {}
-        local missing_len = 0
-        ---@type string[]
-        local unmatched = {}
-        local unmatched_len = 0
-        for _, filename in ipairs(files) do
-            if not ensure_custom_file(filename, user_dir, shared_dir) then
-                missing_len = missing_len + 1
-                missing[missing_len] = filename
-            elseif not set_pinyin_schema(user_dir .. "/" .. filename, target_pinyin_schema) then
-                unmatched_len = unmatched_len + 1
-                unmatched[unmatched_len] = filename
-            end
-        end
-
-        ---@type string[]
-        local messages = {}
-        local messages_len = 0
-        if #missing > 0 then
-            messages_len = messages_len + 1
-            messages[messages_len] = "〔警告〕未找到以下模板配置文件：\n" .. table.concat(missing, "\n")
-        end
-        if #unmatched > 0 then
-            messages_len = messages_len + 1
-            messages[messages_len] = "〔警告〕在以下配置文件中未找到可切换的条目：\n"
-                .. table.concat(unmatched, "\n")
-        end
-
-        if main_custom_file_exists then
-            messages_len = messages_len + 1
-            messages[messages_len] = (
-                "检测到已有配置，已切换至〔"
-                .. target_pinyin_schema
-                .. "〕方案，请手动重新部署。"
-            )
-        else
-            messages_len = messages_len + 1
-            messages[messages_len] = (
-                "已创建新配置并切换至〔"
-                .. target_pinyin_schema
-                .. "〕方案，请手动重新部署。"
-            )
-        end
-
-        local msg = table.concat(messages, "\n")
-        yield(Candidate("message", seg.start, seg._end, msg, ""))
     end
 end
 
-return translator
+---@type TranslatorModule
+local M = {}
+
+---@param env Env
+function M.init(env)
+    local last_scheme = detect_pinyin_scheme(env.engine.context)
+
+    local notifier = env.engine.context.update_notifier:connect(function(ctx)
+        local scheme = detect_pinyin_scheme(ctx)
+        if scheme and scheme ~= last_scheme then
+            last_scheme = scheme
+            apply_pinyin_schema(scheme, env)
+        end
+    end)
+
+    ---@class SetSchemaState
+    ---@field update_notifier Connection
+    ---@field last_scheme string?
+    env.set_schema_state = {
+        update_notifier = notifier,
+        last_scheme = last_scheme,
+    }
+end
+
+---@param env Env
+function M.fini(env)
+    if env.set_schema_state then
+        env.set_schema_state.update_notifier:disconnect()
+        env.set_schema_state = nil
+    end
+end
+
+---@param input string
+---@param seg Segment
+---@param env Env
+function M.func(input, seg, env) end
+
+return M

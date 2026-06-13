@@ -38,6 +38,9 @@ switches:
     abbrev: [关, 简]
   - name: charset_filter  # 字符集过滤。默认切换快捷键 Ctrl+G。
     states: [大字集, 小字集]
+  - options: [pinyin_pinyin, pinyin_zrm, pinyin_znabc, pinyin_flypy, pinyin_mspy, pinyin_sogou, pinyin_ziguang, pinyin_gbpy, pinyin_pyjj, pinyin_lxsq, pinyin_zrlong, pinyin_hxlong]
+    states: [全拼, 自然码, 智能ABC, 小鹤双拼, 微软双拼, 搜狗双拼, 紫光双拼, 国标双拼, 拼音加加, 乱序17, 自然龙, 汉心龙]
+    abbrev: [拼, 然, 能, 鹤, 微, 搜, 紫, 标, 加, 乱, 龙, 心]
   # Features
   - name: char_priority  # 单字与词组编码重合时，单字或词组优先。
     states: [词组先, 单字先]
@@ -430,8 +433,6 @@ key_binder:
     # 编码中输入 `` 进入造词模式。
     - {match: "^.*`$", accept: "`", send_sequence: '{BackSpace}{Home}{`}{`}{End}'}
 
-    # 双击斜杠键上屏 '/'。
-    - {match: "^/$", accept: "/", send_sequence: '{space}',}
 
 editor:
   bindings:
