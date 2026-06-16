@@ -8,6 +8,8 @@
 
 > [!NOTE]
 > 本项目 Fork 自 [Fidelxyz/rime-wanxiang-slim](https://github.com/Fidelxyz/rime-wanxiang-slim)（万象拼音输入方案精简版）。
+> 原作者：amzxyz、Fidel Yin
+> Fork 作者：FairyScript
 
 > [!WARNING]
 > 本项目正在活跃开发中，可能随时引入破坏性变更。

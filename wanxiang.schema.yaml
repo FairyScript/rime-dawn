@@ -8,6 +8,7 @@ schema:
   author:
     - amzxyz
     - Fidel Yin <fidel.yin@hotmail.com>
+    - FairyScript <h@queb.fun>
   description: |
     Rime 拼音/双拼输入方案
   dependencies:

@@ -2,6 +2,7 @@
 ---dictionaries or candidate comments, supporting fuzzy matching and multiple data sources.
 ---@author amzxyz
 ---@author Fidel Yin <fidel.yin@hotmail.com>
+---@author FairyScript <h@queb.fun>
 
 ---@class LookupFilterConfig
 ---@field data_sources (string|"aux"|"db")[]

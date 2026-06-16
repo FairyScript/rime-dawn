@@ -1,6 +1,7 @@
 ---Provides core shared utilities, constants, and environment variables used across the various Lua modules in the Wanxiang schema.
 ---@author amzxyz
 ---@author Fidel Yin <fidel.yin@hotmail.com>
+---@author FairyScript <h@queb.fun>
 
 local M = {}
 

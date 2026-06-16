@@ -10,6 +10,7 @@
 ---
 ---@author amzxyz
 ---@author Fidel Yin <fidel.yin@hotmail.com>
+---@author FairyScript <h@queb.fun>
 
 ---@class EnglishConfig
 ---@field english_spacing_mode string|"off"|"smart"|"before"|"after"

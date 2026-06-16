@@ -2,6 +2,7 @@
 ---selected schema rules.
 ---@author amzxyz
 ---@author Fidel Yin <fidel.yin@hotmail.com>
+---@author FairyScript <h@queb.fun>
 
 local wanxiang = require("wanxiang.wanxiang")
 
