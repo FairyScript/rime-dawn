@@ -400,7 +400,7 @@ function F.func(input, env)
 
     local code_len = #code
 
-    -- Forced English word creation: trailing `\\` triggers a raw English commit.
+    -- Forced English word creation: trailing `$$` triggers a raw English commit.
     if code_len > 2 and code:sub(-2) == config.user_dict_trigger .. config.user_dict_trigger then
         local raw_text = code:sub(1, code_len - 2)
         if is_english_phrase(raw_text) then

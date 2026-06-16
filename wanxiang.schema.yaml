@@ -123,7 +123,7 @@ recognizer:
 # 拼写处理器
 speller:
   # 参与编码的按键。此处设定的按键将不直接上屏。
-  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA7890~
+  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA7890~$
 
   # 首个编码允许的按键。作用同 `alphabet`，但仅作用于首个编码。
   initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA~
@@ -210,7 +210,7 @@ wanxiang_english:
   spacing_timeout: 5
 
   # 英文造词触发符号，双击触发造词。
-  user_dict_trigger: "\\"
+  user_dict_trigger: "$"
 
 wanxiang_mixedcode:
   dictionary: wanxiang_mixedcode
