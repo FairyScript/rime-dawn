@@ -23,7 +23,7 @@ patch:
   #translator/enable_user_dict: true
 
   # 取消注释以启用手动造词功能。
-  #recognizer/patterns/user_dict_appender: "^``[A-Za-z/`']*$"  #自造词引导
+  #recognizer/patterns/user_dict_appender: "^@[A-Za-z@']*$"  #自造词引导
   #user_dict/enable_user_dict: true
   #user_dict_appender/enable_user_dict: true
 

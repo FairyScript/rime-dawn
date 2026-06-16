@@ -117,7 +117,7 @@ engine:
 recognizer:
   patterns:
     wanxiang_reverse: "^~[A-Za-z]*$"
-    #user_dict_appender: "^``[A-Za-z/`']*$"
+    #user_dict_appender: "^@[A-Za-z@']*$"
     unicode: "^U[0-9a-fA-F]+"
 
 # 拼写处理器

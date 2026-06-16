@@ -523,10 +523,10 @@ function F.init(env)
     -- Hook into the context's select_notifier, which fires every time the user
     -- selects (commits) a candidate from the menu. The purpose is to clean up
     -- the input buffer after a candidate is chosen while the auxiliary-code
-    -- lookup trigger (e.g. "`") is present.
+    -- lookup trigger (e.g. "~") is present.
     --
     -- Workflow:
-    --   1. When the user types "pinyin`aux" and picks a candidate, this callback
+    --   1. When the user types "pinyin~aux" and picks a candidate, this callback
     --      runs with the current input still containing the trigger + aux code.
     --   2. It splits the input at the trigger to recover the base pinyin code
     --      (everything before the trigger).
@@ -534,7 +534,7 @@ function F.init(env)
     --      to the user) to decide what to do next:
     --        a. If the preedit still contains unconverted alphanumeric input
     --           before the trigger, there are remaining syllables to convert,
-    --           so it resets the input to "code`" — keeping the trigger so the
+    --           so it resets the input to "code~" — keeping the trigger so the
     --           user can continue auxiliary-code filtering on the next candidate.
     --        b. If the preedit is fully converted (no remaining raw input),
     --           the entire phrase is done, so it strips the trigger, sets the
