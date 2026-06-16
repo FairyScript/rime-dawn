@@ -162,3 +162,56 @@
 **候选词部分上屏**：<kbd>Ctrl</kbd> + 数字键上屏首选前 N 字，并保留后续编码。
 
 **版本显示**：输入 `/version` 显示输入方案及 Rime 版本信息。
+
+## 默认热键
+
+### 模式切换
+
+| 热键 | 功能 |
+|------|------|
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>3</kbd> | 切换中英标点 |
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd> | 切换简繁体 |
+| <kbd>Ctrl</kbd>+<kbd>G</kbd> | 切换字符集过滤 |
+| <kbd>Ctrl</kbd>+<kbd>A</kbd> | 切换辅助码提示 |
+| <kbd>Ctrl</kbd>+<kbd>S</kbd> | 切换编码区显示模式 |
+
+### 编辑操作
+
+| 热键 | 功能 |
+|------|------|
+| <kbd>Space</kbd> | 上屏候选项 |
+| <kbd>Return</kbd> | 上屏原始输入 |
+| <kbd>Ctrl</kbd>+<kbd>Return</kbd> | 上屏 preedit |
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Return</kbd> | 上屏 comment |
+| <kbd>BackSpace</kbd> | 向前删除 |
+| <kbd>Delete</kbd> | 向后删除 |
+| <kbd>Ctrl</kbd>+<kbd>BackSpace</kbd> | 删除一个音节 |
+| <kbd>Ctrl</kbd>+<kbd>Delete</kbd> | 删除或降权候选项 |
+| <kbd>Escape</kbd> | 取消输入 |
+
+### 光标移动
+
+| 热键 | 功能 |
+|------|------|
+| <kbd>Left</kbd> / <kbd>Right</kbd> | 按字符移动 |
+| <kbd>Shift</kbd>+<kbd>Left</kbd> / <kbd>Right</kbd> | 按音节跳转 |
+| <kbd>Alt</kbd>+<kbd>Left</kbd> / <kbd>Right</kbd> | 切换光标至下/上一个拼音 |
+| <kbd>Tab</kbd> | 跳转到下一个音节 |
+| <kbd>Shift</kbd>+<kbd>Tab</kbd> | 跳转到上一个音节 |
+| <kbd>Ctrl</kbd>+<kbd>Tab</kbd> | 提交当前音节并跳转到下一个 |
+
+### 翻页
+
+| 热键 | 功能 |
+|------|------|
+| <kbd>-</kbd> | 上一页 |
+| <kbd>=</kbd> | 下一页 |
+
+### 其他
+
+| 热键 | 功能 |
+|------|------|
+| <kbd>Ctrl</kbd>+<kbd>\\</kbd> | 进入造词模式 |
+| <kbd>Ctrl</kbd>+<kbd>W</kbd> | 删除前一个拼音 |
+| <kbd>[</kbd> / <kbd>]</kbd> | 以词定字（首选词首/末字） |
+| <kbd>7</kbd> <kbd>8</kbd> <kbd>9</kbd> <kbd>0</kbd> | 声调辅助筛选（一二三四声） |
