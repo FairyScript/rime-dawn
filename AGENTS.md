@@ -1,9 +1,9 @@
-# AGENTS.md — 万象拼音精简版 (rime-wanxiang-slim)
+# AGENTS.md — rime-dawn
 
 ## What This Is
 
 Rime input method user data directory for the **万象拼音精简版** (Wanxiang Pinyin Slim) schema.
-Source repo: `https://github.com/Fidelxyz/rime-wanxiang-slim`
+Source repo: `https://github.com/FairyScript/rime-dawn` (Fork 自 `https://github.com/Fidelxyz/rime-wanxiang-slim`)
 Engine: Weasel (小狼毫) 0.17.4 / Rime 1.13.1 — Windows `%APPDATA%\Rime`.
 
 This is NOT a typical software project. There are no package managers, build scripts, or test runners locally. The "build" is Rime's own `rime_deployer` (triggered by Weasel's "重新部署").
